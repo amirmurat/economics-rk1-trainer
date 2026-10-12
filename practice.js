@@ -4,6 +4,7 @@ var currentLang = "en";
 var currentStudentIdx = 0;
 var practiceStorePrefix = "se-mc1-trainer-v2:";
 var toastTimer = null;
+var hasRenderedPractice = false;
 
 function safeStorageGet(key) {
     try { return localStorage.getItem(practiceStorePrefix + key); } catch (e) { return null; }
@@ -30,7 +31,7 @@ function notify(msg, isError) {
 }
 function setLanguage(nextLang) {
     if (nextLang !== "ru" && nextLang !== "en") return;
-    savePractice();
+    if (hasRenderedPractice) savePractice();
     currentLang = nextLang;
     safeStorageSet("lang", nextLang);
     var en = document.getElementById("lang-btn-en");
@@ -41,6 +42,7 @@ function setLanguage(nextLang) {
         el.textContent = el.getAttribute("data-lang-" + nextLang);
     });
     renderPractice();
+    hasRenderedPractice = true;
 }
 function refreshVariantLabel() {
     var label = currentLang === "ru" ? "Тренировочный вариант" : "Practice variant";
@@ -112,7 +114,7 @@ function renderPractice() {
     });
     var results = document.getElementById("practice-results");
     if (results) { results.classList.add("hidden"); results.replaceChildren(); }
-    window.setTimeout(restorePractice, 260);
+    window.setTimeout(restorePractice, 350);
 }
 function switchTab(tabId) {
     var target = document.getElementById(tabId);
@@ -124,7 +126,9 @@ function switchTab(tabId) {
     });
     if (tabId === "tab-part4" || tabId === "tab-part3") {
         window.setTimeout(function () {
-            [window.p4Chart1Inst, window.p4Chart2Inst, window.costChartInstance].forEach(function (chart) {
+            [typeof p4Chart1Inst !== "undefined" ? p4Chart1Inst : null,
+         typeof p4Chart2Inst !== "undefined" ? p4Chart2Inst : null,
+         typeof costChartInstance !== "undefined" ? costChartInstance : null].forEach(function (chart) {
                 if (chart && typeof chart.resize === "function") chart.resize();
             });
         }, 180);
