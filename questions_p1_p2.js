@@ -1,10 +1,20 @@
 /* ==========================================
-   MIDTERM CONTROL 1 • PRACTICE QUESTION BANK
-   AlmaU SDTE 2026 • SE PRACTICE
+   MIDTERM CONTROL 1 • FULL QUESTION BANK
+   AlmaU SDTE 2026 • Software Engineering (SE)
    Fully Checked, Randomized & Balanced
    ========================================== */
 
-const STUDENTS_LIST = Array.from({length: 19}, (_, i) => "Training Variant " + (i + 1));
+const STUDENTS_LIST = [
+    "Азими Шазия",
+    "Берікбай Нұрай Нұрғалиқызы",
+    "Қалдыбай Алиянұр Ғалымқызы",
+    "Қошан Нұрай Нұрланқызы (ДОТ)",
+    "Марлен Бақтияр",
+    "Мұрат Әмір Олжасұлы",
+    "Нурхайдаров Бексултан Айдарович",
+    "Төлегенқызы Айгерім",
+    "Хамитбек Ажар Ғаниқызы"
+];
 
 // ПУЛ 1: ОСНОВЫ МИКРОЭКОНОМИКИ И ИЗДЕРЖКИ
 const PART1_POOL = [
@@ -205,8 +215,8 @@ const PART2_POOL = [
         ans: "B"
     },
     {
-        q_en: "Government increases minimum wage for bicycle workers by \$1/hr. What is the immediate effect?",
-        q_ru: "Государство повышает минимальную зарплату рабочих велозавода на \$1/час. Каков результат?",
+        q_en: "Government increases minimum wage for bicycle workers by $1/hr. What is the immediate effect?",
+        q_ru: "Государство повышает минимальную зарплату рабочих велозавода на $1/час. Каков результат?",
         opts_en: ["A) Demand for workers increases", "B) Supply of bicycles shifts right", "C) Supply of bicycles shifts left", "D) Output increases", "E) Demand for bicycles shifts right"],
         opts_ru: ["A) Спрос на рабочих вырастет", "B) Предложение велосипедов сдвинется вправо", "C) Предложение велосипедов сдвинется влево", "D) Выпуск автоматически увеличится", "E) Спрос на велосипеды сдвинется вправо"],
         ans: "C"
@@ -376,8 +386,8 @@ function getStudentQuestions(studentIdx) {
 }
 
 function renderQuestionsP1P2(studentIdx, lang) {
-    // Применяем сдвиг вариантов на +1
-    studentIdx = (studentIdx + 1) % 19;
+    // Применяем динамический сдвиг на основе общего количества студентов в группе (9 человек)
+    studentIdx = (studentIdx + 1) % STUDENTS_LIST.length;
 
     // Генерируем набор вопросов с учетом сдвига
     const selected = getStudentQuestions(studentIdx);
