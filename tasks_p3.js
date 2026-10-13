@@ -1,9 +1,9 @@
-// ==========================================
-// MIDTERM CONTROL 1 • MODULE FOR PART 3
-// Computational Tasks & Cost Dynamics (10 Units)
-// AlmaU SDTE 2026 • International Business
-// Strict Dot-Decimal & Blank Initial Chart Engine
-// ==========================================
+/* ==========================================
+   MIDTERM CONTROL 1 • MODULE FOR PART 3
+   Computational Tasks & Cost Dynamics (10 Units)
+   AlmaU SDTE 2026 • Software Engineering (SE)
+   Strict Dot-Decimal & Smooth U-Shaped Curves
+   ========================================== */
 
 let costChartInstance = null;
 
@@ -16,17 +16,7 @@ const p3_productCatalog = [
     { en: "wireless headphones", ru: "беспроводных наушников" },
     { en: "craft bakery boxes", ru: "наборов крафтовой выпечки" },
     { en: "energy drink packs", ru: "упаковок энергетических напитков" },
-    { en: "smart watches", ru: "умных часов" },
-    { en: "gourmet ice cream tubs", ru: "ведерок премиального мороженого" },
-    { en: "designer sneakers", ru: "дизайнерских кроссовок" },
-    { en: "protein bar boxes", ru: "коробок протеиновых батончиков" },
-    { en: "solar power banks", ru: "солнечных пауэрбанков" },
-    { en: "imported cheese blocks", ru: "головок импортного сыра" },
-    { en: "ceramic coffee mugs", ru: "керамических кружек" },
-    { en: "natural fruit juice cartons", ru: "упаковок натурального сока" },
-    { en: "portable bluetooth speakers", ru: "портативных колонок" },
-    { en: "Italian pasta sets", ru: "наборов итальянской пасты" },
-    { en: "fitness trackers", ru: "фитнес-браслетов" }
+    { en: "smart watches", ru: "умных часов" }
 ];
 
 function sanitizeDecimalInput(inputElement) {
@@ -35,12 +25,13 @@ function sanitizeDecimalInput(inputElement) {
 }
 
 function renderTasksP3(seed, lang) {
-    seed = (seed + 1) % 19;
+    // Ротация строго среди 9 студентов
+    seed = (seed + 1) % 9;
 
     const container = document.getElementById('part3-container');
     if (!container) return;
 
-    const k = seed + 1; // Вариантный множитель (1..19)
+    const k = seed + 1; // Вариантный множитель (1..9)
 
     // 1. ЗАДАЧА 3.1: Спрос, Предложение и Выручка
     const prod = p3_productCatalog[seed % p3_productCatalog.length];
@@ -63,26 +54,31 @@ function renderTasksP3(seed, lang) {
     const Q_val = 20 + k;
     const expectedMC = paramA - 2 * paramB * Q_val; 
 
-    // 4. ЗАДАЧА 3.4: Таблица издержек на 10 единиц (Классическая U-образная динамика)
+    // 4. ЗАДАЧА 3.4: ТАБЛИЦА ИЗДЕРЖЕК НА 10 ЕДИНИЦ (СТРОГО ГЛАДКАЯ МОДЕЛЬ)
     const FC = 60 + (k % 3) * 10;
     
-    // Кубическая функция VC(Q) = a*Q - b*Q^2 + c*Q^3 для получения U-образных AVC и ATC
-    const a = 35 + (k % 4) * 2; 
-    const b = 5 + (k % 3) * 0.5;
-    const c = 0.6 + (k % 3) * 0.1;
+    // Формируем MC как параболу MC(Q) = m0 + m1*(Q - q_min)^2
+    // Это гарантирует, что MC снижается до Q=2, а затем СТРОГО и ГЛАДКО возрастает без пиков!
+    const m0 = 12 + (k % 3);       // Минимальное значение MC
+    const q_min = 2;               // Точка минимума MC
+    const alpha = 1.8 + (k % 3) * 0.3; // Скорость роста MC
 
+    const mcArr = [0];
     const vcArr = [0];
+    let cumVC = 0;
+
     for (let q = 1; q <= 10; q++) {
-        let vcVal = Math.round(a * q - b * Math.pow(q, 2) + c * Math.pow(q, 3));
-        vcArr.push(vcVal);
+        let mcVal = Math.round(m0 + alpha * Math.pow(q - q_min, 2));
+        mcArr.push(mcVal);
+        cumVC += mcVal;
+        vcArr.push(cumVC);
     }
 
     const P_mkt = 45 + (k % 4) * 5;
 
     let optQ = 1;
     for (let q = 1; q <= 10; q++) {
-        let mc = vcArr[q] - vcArr[q - 1];
-        if (mc <= P_mkt) optQ = q;
+        if (mcArr[q] <= P_mkt) optQ = q;
     }
 
     const t1Text = lang === 'en' ?
@@ -253,7 +249,7 @@ function init10UnitCostChart() {
     });
 }
 
-// Обновление графика СТРОГО из того, что ввел студент
+// Обновление графика СТРОГО из введённых студентом данных
 function updateCostChartFromTableInputs() {
     if (!costChartInstance) return;
     let newAFC = [], newAVC = [], newATC = [], newMC = [];
