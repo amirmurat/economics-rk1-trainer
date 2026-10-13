@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MC1 Practice Lab • Principles of Economics • SE • AlmaU 2026</title>
+    <title>MC1 Practice Lab • Economics (SE) • AlmaU 2026</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
@@ -95,7 +95,7 @@
         <!-- Header -->
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center card p-6 border-t-2 border-t-indigo-500/50">
             <div>
-                <h1 class="text-xl md:text-2xl font-bold tracking-tight text-white" data-lang-en="Principles of Economics • MC1 Practice Lab" data-lang-ru="Принципы экономики • Тренажёр РК1">Principles of Economics • MC1 Practice Lab</h1>
+                <h1 class="text-xl md:text-2xl font-bold tracking-tight text-white" data-lang-en="Economics • Midterm Control 1 — Practice" data-lang-ru="Экономика • РК1 — Тренажёр">Экономика • РК1 — Тренажёр</h1>
                 <div class="flex flex-wrap items-center gap-2 mt-1 text-xs text-slate-400">
                     <span class="font-bold tracking-widest text-indigo-400 uppercase">SOFTWARE ENGINEERING • PRACTICE</span>
                     <span>•</span>
@@ -109,55 +109,56 @@
             </div>
         </header>
 
-        <!-- Training variant selector (no student personal information) -->
-        <section class="card p-6" aria-label="Choose training variant">
+        <!-- Official SE student entry, private practice controls -->
+        <section class="card p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label for="training-variant" class="block text-xs uppercase font-bold text-slate-400 tracking-wider mb-2"
-                      data-lang-en="Practice Mode — Select Your Variant (1–19)" data-lang-ru="Тренировка — выберите вариант (1–19)">Practice Mode — Select Your Variant (1–19)</label>
-                    <div class="flex flex-wrap gap-2">
-                        <select id="training-variant" onchange="chooseVariant(this.value)" class="flex-1 min-w-36 bg-slate-950 border border-slate-800 p-3.5 rounded-lg text-base text-white focus:ring-2 focus:ring-indigo-500 outline-none transition">
-                            <option value="1">Variant 1</option>
-<option value="2">Variant 2</option>
-<option value="3">Variant 3</option>
-<option value="4">Variant 4</option>
-<option value="5">Variant 5</option>
-<option value="6">Variant 6</option>
-<option value="7">Variant 7</option>
-<option value="8">Variant 8</option>
-<option value="9">Variant 9</option>
-<option value="10">Variant 10</option>
-<option value="11">Variant 11</option>
-<option value="12">Variant 12</option>
-<option value="13">Variant 13</option>
-<option value="14">Variant 14</option>
-<option value="15">Variant 15</option>
-<option value="16">Variant 16</option>
-<option value="17">Variant 17</option>
-<option value="18">Variant 18</option>
-<option value="19">Variant 19</option>
-                        </select>
-                        <button onclick="randomVariant()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg text-xs"
-                          data-lang-en="Random Variant" data-lang-ru="Случайный вариант">Random Variant</button>
-                    </div>
-                    <div class="flex flex-wrap gap-2 mt-3">
-                        <button onclick="openQuestionBank()" class="px-4 py-2 bg-slate-800 border border-slate-700 hover:border-indigo-400 text-indigo-300 rounded-lg text-xs font-bold"
-                          data-lang-en="All 27 Questions" data-lang-ru="Все 27 вопросов">All 27 Questions</button>
-                        <button onclick="resetPractice()" class="px-4 py-2 bg-slate-800 border border-slate-700 hover:border-rose-400 text-slate-300 rounded-lg text-xs font-bold"
-                          data-lang-en="Reset Variant" data-lang-ru="Очистить ответы">Reset Variant</button>
-                    </div>
-                    <p class="text-xs text-slate-500 mt-3" data-lang-en="Same 19 variants and problem parameters as the professor's MC1. Private self-study, no sign-in or submission."
-                       data-lang-ru="19 вариантов и параметры заданий из MC1 преподавателя. Личная тренировка без регистрации и отправки оценок.">Same 19 variants and problem parameters as the professor's MC1. Private self-study, no sign-in or submission.</p>
+                    <label class="block text-xs uppercase font-bold text-slate-400 tracking-wider mb-2" data-lang-en="Student Credentials (Select Your Name)" data-lang-ru="Идентификация студента (Выберите ФИО)">Student Credentials (Select Your Name)</label>
+                    <input type="text" id="student-name" list="students-list" placeholder="Begin typing your name..." 
+                           class="w-full bg-slate-950 border border-slate-800 p-3.5 rounded-lg text-base text-white focus:ring-2 focus:ring-indigo-500 outline-none transition"
+                           oninput="selectStudentForPractice()" onchange="selectStudentForPractice()" onkeyup="selectStudentForPractice()">
+                    <datalist id="students-list">
+                        <option value="Азими Шазия"></option>
+                        <option value="Берікбай Нұрай Нұрғалиқызы"></option>
+                        <option value="Қалдыбай Алиянұр Ғалымқызы"></option>
+                        <option value="Қошан Нұрай Нұрланқызы (ДОТ)"></option>
+                        <option value="Марлен Бақтияр"></option>
+                        <option value="Мұрат Әмір Олжасұлы"></option>
+                        <option value="Нурхайдаров Бексултан Айдарович"></option>
+                        <option value="Төлегенқызы Айгерім"></option>
+                        <option value="Хамитбек Ажар Ғаниқызы"></option>
+                    </datalist>
+                    <p class="text-xs text-slate-500 mt-2" data-lang-en="Personalized variant parameters load automatically upon validation." data-lang-ru="Индивидуальные параметры варианта загружаются автоматически после выбора ФИО.">Personalized variant parameters load automatically upon validation.</p>
                 </div>
                 <div class="flex flex-col justify-center bg-slate-950/40 border border-slate-800/60 p-4 rounded-xl">
-                    <div class="text-xs uppercase font-bold text-slate-500 tracking-wider"
-                      data-lang-en="Practice Variant Status" data-lang-ru="Текущий тренировочный вариант">Practice Variant Status</div>
+                    <div class="text-xs uppercase font-bold text-slate-500 tracking-wider" data-lang-en="Assigned Variant Status" data-lang-ru="Статус персонального варианта">Assigned Variant Status</div>
                     <div id="student-status-box" class="flex items-center gap-3 mt-2 text-indigo-300 font-bold text-lg">
-                        <i class="fas fa-check-circle text-2xl text-emerald-400"></i><span class="text-emerald-300">Practice mode</span>
+                        <i class="fas fa-user-graduate text-2xl text-slate-700 animate-pulse"></i>
+                        <span class="text-slate-500 font-normal" data-lang-en="Awaiting authentic name selection..." data-lang-ru="Ожидание выбора имени студента...">Awaiting authentic name selection...</span>
                     </div>
-                    <div class="mt-2 text-xs text-slate-500" data-lang-en="Answers stay in this browser. Tabs and copy/paste are allowed."
-                        data-lang-ru="Ответы хранятся в браузере. Вкладки и копирование разрешены.">Answers stay in this browser. Tabs and copy/paste are allowed.</div>
                 </div>
+            </div>
+            <div class="border-t border-slate-800 mt-5 pt-4 space-y-2">
+                <div class="flex flex-wrap gap-2 items-center">
+                    <label for="training-variant" class="text-xs font-bold text-indigo-300 uppercase tracking-wider" data-lang-en="Practice variant" data-lang-ru="Тренировочный вариант">Тренировочный вариант</label>
+                    <select id="training-variant" onchange="chooseVariant(this.value)" class="flex-1 min-w-52 bg-slate-950 border border-slate-800 p-3 rounded-lg text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="" data-lang-en="Select student" data-lang-ru="Выберите студента">Выберите студента</option>
+                    <option value="1">Variant 1</option>
+                    <option value="2">Variant 2</option>
+                    <option value="3">Variant 3</option>
+                    <option value="4">Variant 4</option>
+                    <option value="5">Variant 5</option>
+                    <option value="6">Variant 6</option>
+                    <option value="7">Variant 7</option>
+                    <option value="8">Variant 8</option>
+                    <option value="9">Variant 9</option>
+                    </select>
+                    <button onclick="randomVariant()" class="px-4 py-3 bg-indigo-600 text-white font-bold rounded-lg text-xs" data-lang-en="Random Variant" data-lang-ru="Случайный вариант">Случайный вариант</button>
+                    <button onclick="openQuestionBank()" class="px-4 py-3 bg-slate-800 border border-slate-700 text-indigo-300 rounded-lg text-xs font-bold" data-lang-en="All 27 Questions" data-lang-ru="Все 27 вопросов">Все 27 вопросов</button>
+                    <button onclick="resetPractice()" class="px-4 py-3 bg-slate-800 border border-slate-700 text-slate-300 rounded-lg text-xs font-bold" data-lang-en="Clear Answers" data-lang-ru="Очистить ответы">Очистить ответы</button>
+                </div>
+                <p class="text-xs text-slate-500" data-lang-en="Nine personalized variants from the latest public Software Engineering exam files. Answers stay in this browser and are never submitted to the instructor."
+                   data-lang-ru="Девять персональных вариантов из актуальных файлов экзамена Software Engineering. Ответы хранятся только в браузере, без отправки преподавателю.">Девять персональных вариантов из актуальных файлов экзамена Software Engineering. Ответы хранятся только в браузере, без отправки преподавателю.</p>
             </div>
         </section>
 
@@ -227,7 +228,7 @@
     <!-- Centered Footer -->
     <footer class="border-t border-slate-800/80 bg-slate-950/60 py-5 text-center text-xs text-slate-500 w-full mt-10">
         <div class="max-w-[1500px] mx-auto px-4 flex justify-center items-center gap-4 relative">
-            <p class="text-slate-500 text-center">MC1 practice mirror • Based on public materials by Ogay D.V. • AlmaU 2026 • <a class="text-indigo-400 underline" href="https://github.com/ogaydv-prog/principles-economics/tree/main/MC1" target="_blank" rel="noopener noreferrer">Original MC1</a></p>
+            <p class="text-slate-500 text-center">MC1 SE practice mirror • Based on current public SE exam files • AlmaU 2026 • <a class="text-indigo-400 underline" href="https://github.com/ogaydv-prog/Economics-se/tree/main/MC1" target="_blank" rel="noopener noreferrer">Original MC1</a></p>
             
         </div>
     </footer>
