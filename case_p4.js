@@ -1,4 +1,8 @@
-/* case_p4.js — Part 4: Interactive Case Analysis for Principles of Economics (MC1 AlmaU SDTE 2026) */
+/* ==========================================
+   MIDTERM CONTROL 1 • MODULE FOR PART 4
+   Interactive Case Analysis & Market Dynamics
+   AlmaU SDTE 2026 • Software Engineering (SE)
+   ========================================== */
 
 let p4Chart1Inst = null;
 let p4Chart2Inst = null;
@@ -84,6 +88,7 @@ function renderCaseP4(studentIdx, lang) {
     if (p4Chart1Inst) { p4Chart1Inst.destroy(); p4Chart1Inst = null; }
     if (p4Chart2Inst) { p4Chart2Inst.destroy(); p4Chart2Inst = null; }
 
+    // Ротация 3 типов рынков ровно распределяется среди 9 студентов (3 студента на каждый тип рынка)
     const marketType = studentIdx % 3; // 0: PC, 1: MC, 2: Monopoly
     
     const variantShift = (studentIdx * 7) % 23; 
@@ -132,13 +137,13 @@ function renderCaseP4(studentIdx, lang) {
     const titles = {
         en: [
             "Case 1: Grain Exporter Strategy & Market Volatility (Perfect Competition)", 
-            "Case 2: International Retail Expansion & Entry Dynamics (Monopolistic Competition)", 
-            "Case 3: Seaport Infrastructure & Tariff Optimization (Pure Monopoly)"
+            "Case 2: SaaS Platform Expansion & Entry Dynamics (Monopolistic Competition)", 
+            "Case 3: Cloud Infrastructure & Tariff Optimization (Pure Monopoly)"
         ],
         ru: [
             "Кейс 1: Стратегия экспортера зерна и ценовые шоки (Совершенная конкуренция)", 
-            "Кейс 2: Экспансия международного ритейла и вход брендов (Монополистическая конкуренция)", 
-            "Кейс 3: Морской порт и оптимизация тарифов (Чистая монополия)"
+            "Кейс 2: Экспансия SaaS-платформы и вход конкурентов (Монополистическая конкуренция)", 
+            "Кейс 3: Облачная инфраструктура и оптимизация тарифов (Чистая монополия)"
         ]
     };
 
@@ -163,7 +168,7 @@ function renderCaseP4(studentIdx, lang) {
             3. In your essay, explain how entry of competitors affects demand and why long-run tangency leads to <b>Excess Capacity</b>.`,
             
             `<b>EXECUTIVE TASK (Pure Monopoly):</b><br>
-            1. Adjust Tariff Rate (<b>P</b>) and Cargo Volume (<b>Q</b>) while inspecting the charts.<br>
+            1. Adjust Tariff Rate (<b>P</b>) and Service Volume (<b>Q</b>) while inspecting the charts.<br>
             2. Determine optimal output where <b>MR = MC</b> on the graph.<br>
             3. In your essay, calculate total revenue, profit, and explain deadweight loss from monopoly output restriction.`
         ],
@@ -176,10 +181,10 @@ function renderCaseP4(studentIdx, lang) {
             `<b>ЗАДАНИЕ КЕЙСА (Монополистическая конкуренция):</b><br>
             1. Переключайте режимы между <b>Краткосрочным (SR)</b> и <b>Долгосрочным (LR)</b> периодами.<br>
             2. Найдите по графикам точку равновесия <b>Q</b>, где <b>MR = MC</b>.<br>
-            3. В эссе ниже обоснуйте, как вход новых брендов сдвигает спрос и почему возникает феномен <b>Избыточных мощностей (Excess Capacity)</b>.`,
+            3. В эссе ниже обоснуйте, как вход новых сервисов сдвигает спрос и почему возникает феномен <b>Избыточных мощностей (Excess Capacity)</b>.`,
             
             `<b>ЗАДАНИЕ КЕЙСА (Чистая монополия):</b><br>
-            1. Управляйте тарифом (<b>P</b>) и объемом грузопотока (<b>Q</b>), отслеживая графики TR, TC, MR, MC.<br>
+            1. Управляйте тарифом (<b>P</b>) и объемом услуг (<b>Q</b>), отслеживая графики TR, TC, MR, MC.<br>
             2. Определите по графикам объем, максимизирующий монопольную прибыль (<b>MR = MC</b>).<br>
             3. В эссе сопоставьте монопольное ценообразование с конкурентным рынком и объясните потери общества.`
         ]
@@ -190,19 +195,19 @@ function renderCaseP4(studentIdx, lang) {
             <div class="flex justify-between items-center">
                 <label class="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
                     <i class="fas fa-pen-nib text-indigo-400"></i>
-                    ${lang === 'en' ? 'Executive Strategy Justification (Min 100 Words)' : 'Стратегическое обоснование (Минимум 100 слов)'}
+                    ${lang === 'en' ? 'Executive Strategy Justification (Min 60 Words)' : 'Стратегическое обоснование (Минимум 60 слов)'}
                 </label>
-                <span id="p4-word-counter" class="text-[10px] font-mono font-bold text-rose-400">0 / 100 ${lang === 'en' ? 'words' : 'слов'}</span>
+                <span id="p4-word-counter" class="text-[10px] font-mono font-bold text-rose-400">0 / 60 ${lang === 'en' ? 'words' : 'слов'}</span>
             </div>
             
             <textarea id="p4-essay-input" 
                 class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-xs text-slate-200 h-44 focus:ring-2 focus:ring-indigo-500 outline-none resize-none custom-scrollbar" 
                 placeholder="${lang === 'en' ? 'Write your analysis based on chart curves...' : 'Опишите ваше обоснование на основе графиков: определите пересечение MR=MC, сравните P и ATC, рассчитайте прибыль и укажите стратегию...'}"
-                
+                onpaste="notify('${lang === 'en' ? 'Pasting is disabled. Type manually.' : 'Вставка заблокирована. Введите текст вручную.'}', true); return false;"
                 oninput="p4_checkWordCount()"></textarea>
             
             <p class="text-[9px] text-slate-500 leading-tight">
-                ${lang === 'en' ? 'Practice mode: at least 100 words recommended.' : 'Режим тренировки: рекомендуем минимум 100 слов.'}
+                ${lang === 'en' ? 'Direct copy-paste is disabled. Minimum 60 words required.' : 'Защита от вставки активирована. Для отправки требуется минимум 60 слов.'}
             </p>
         </div>
     `;
@@ -212,7 +217,7 @@ function renderCaseP4(studentIdx, lang) {
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-800 pb-4 gap-4">
             <div>
                 <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">
-                    ${lang === 'en' ? 'International Business Case Simulator' : 'Интерактивный кейс-симулятор'}
+                    ${lang === 'en' ? 'Software Engineering Economics Case' : 'Интерактивный кейс-симулятор (SE)'}
                 </span>
                 <h3 class="text-xl font-black text-white mt-1">${titles[lang][marketType]}</h3>
             </div>
@@ -243,7 +248,6 @@ function renderCaseP4(studentIdx, lang) {
                         <label class="text-xs font-bold text-slate-300 uppercase">${lang==='en'?'Export Volume (Q)':'Объем экспорта (Q)'}</label>
                         <span id="p4-pc-val-q" class="text-lg font-black text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">0 units</span>
                     </div>
-                    <!-- Слайдер всегда стартует с min (0) -->
                     <input type="range" id="p4-pc-slider-q" min="0" max="10" value="0" step="1" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500" oninput="p4_updatePcDashboard()">
                 </div>
 
@@ -290,7 +294,6 @@ function renderCaseP4(studentIdx, lang) {
                             <label class="text-xs font-bold text-slate-300 uppercase">${lang==='en'?'Sales Quantity (Q)':'Объем продаж (Q)'}</label>
                             <span id="p4-mc-val-q" class="text-lg font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">0 units</span>
                         </div>
-                        <!-- Слайдер всегда стартует с min (0) -->
                         <input type="range" id="p4-mc-slider-q" min="0" max="10" value="0" step="1" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" oninput="p4_updateMcDashboard()">
                     </div>
                 </div>
@@ -320,7 +323,7 @@ function renderCaseP4(studentIdx, lang) {
     else {
         const minTariff = p4_monoTableData[10].p;
         const maxTariff = p4_monoTableData[0].p;
-        const defTariff = p4_monoTableData[0].p; // Старт с максимального тарифа при Q=0
+        const defTariff = p4_monoTableData[0].p;
         const stepTariff = roundInt(10 * activeMult);
 
         html += `
@@ -329,7 +332,7 @@ function renderCaseP4(studentIdx, lang) {
                 <div class="bg-slate-950/80 p-4 rounded-xl border border-slate-800 space-y-4">
                     <div>
                         <div class="flex justify-between items-center mb-1">
-                            <label class="text-xs font-bold text-slate-300 uppercase">${lang==='en'?'Port Tariff Rate (P)':'Тариф на обработку (P)'}</label>
+                            <label class="text-xs font-bold text-slate-300 uppercase">${lang==='en'?'Tariff Rate (P)':'Тариф на услуги (P)'}</label>
                             <span id="p4-mo-slider-val-p" class="text-lg font-black text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">$${defTariff}</span>
                         </div>
                         <input type="range" id="p4-mo-slider-p" min="${minTariff}" max="${maxTariff}" value="${defTariff}" step="${stepTariff}" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500">
@@ -337,10 +340,9 @@ function renderCaseP4(studentIdx, lang) {
 
                     <div>
                         <div class="flex justify-between items-center mb-1">
-                            <label class="text-xs font-bold text-slate-300 uppercase">${lang==='en'?'Cargo Flow (Q)':'Объем грузопотока (Q)'}</label>
+                            <label class="text-xs font-bold text-slate-300 uppercase">${lang==='en'?'Service Volume (Q)':'Объем услуг (Q)'}</label>
                             <span id="p4-mo-val-q" class="text-lg font-black text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded">0 units</span>
                         </div>
-                        <!-- Слайдер всегда стартует с min (0) -->
                         <input type="range" id="p4-mo-slider-q" min="0" max="10" value="0" step="1" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-purple-500">
                     </div>
                 </div>
@@ -384,8 +386,8 @@ function p4_checkWordCount() {
     const words = txt ? txt.split(/\s+/).length : 0;
     const counter = document.getElementById('p4-word-counter');
     if (counter) {
-        counter.innerText = `${words} / 100 ${typeof currentLang !== 'undefined' && currentLang === 'en' ? 'words' : 'слов'}`;
-        counter.className = words >= 100 ? "text-[10px] font-mono font-bold text-emerald-400" : "text-[10px] font-mono font-bold text-rose-400";
+        counter.innerText = `${words} / 60 ${typeof currentLang !== 'undefined' && currentLang === 'en' ? 'words' : 'слов'}`;
+        counter.className = words >= 60 ? "text-[10px] font-mono font-bold text-emerald-400" : "text-[10px] font-mono font-bold text-rose-400";
     }
 }
 
@@ -431,7 +433,6 @@ function p4_setPcScenario(price) {
     p4Chart2Inst.data.datasets[0].data = p4_pcTableData.map(d => price);
     p4Chart2Inst.update();
 
-    // НЕ двигаем слайдер автоматически при смене сценария — студент регулирует сам!
     p4_updatePcDashboard();
 }
 
