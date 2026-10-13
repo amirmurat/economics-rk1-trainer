@@ -1,8 +1,8 @@
 /* MC1 training interface: independent practice controls; no instructor endpoints or exam locks. */
 "use strict";
 var currentLang = "en";
-var currentStudentIdx = 0;
-var practiceStorePrefix = "se-mc1-trainer-v2:";
+var currentStudentIdx = -1;
+var practiceStorePrefix = "se-mc1-trainer-se-v3:";
 var toastTimer = null;
 var hasRenderedPractice = false;
 
@@ -31,37 +31,64 @@ function notify(msg, isError) {
 }
 function setLanguage(nextLang) {
     if (nextLang !== "ru" && nextLang !== "en") return;
-    if (hasRenderedPractice) savePractice();
+    if (hasRenderedPractice && currentStudentIdx >= 0) savePractice();
     currentLang = nextLang;
     safeStorageSet("lang", nextLang);
     var en = document.getElementById("lang-btn-en");
     var ru = document.getElementById("lang-btn-ru");
     en.className = nextLang === "en" ? "px-3 py-1 text-xs font-bold rounded bg-indigo-600 text-white transition" : "px-3 py-1 text-xs font-bold rounded text-slate-400 hover:text-white transition";
     ru.className = nextLang === "ru" ? "px-3 py-1 text-xs font-bold rounded bg-indigo-600 text-white transition" : "px-3 py-1 text-xs font-bold rounded text-slate-400 hover:text-white transition";
-    document.querySelectorAll("[data-lang-en]").forEach(function (el) {
+    document.querySelectorAll("[data-lang-en]").forEach(function(el) {
         el.textContent = el.getAttribute("data-lang-" + nextLang);
     });
-    renderPractice();
-    hasRenderedPractice = true;
+    var picker = document.getElementById("training-variant");
+    if (picker && typeof STUDENTS_LIST !== "undefined") {
+        for (var i = 0; i < STUDENTS_LIST.length; i++) {
+            var option = picker.querySelector('option[value="' + (i + 1) + '"]');
+            if (option) option.textContent = (nextLang === "ru" ? "Вариант" : "Variant") + " " + (i + 1) + " — " + STUDENTS_LIST[i];
+        }
+    }
+    if (currentStudentIdx >= 0) {renderPractice();hasRenderedPractice = true;}
+    else refreshVariantLabel();
 }
 function refreshVariantLabel() {
-    var label = currentLang === "ru" ? "Тренировочный вариант" : "Practice variant";
-    document.getElementById("student-status-box").innerHTML =
-        '<i class="fas fa-check-circle text-2xl text-emerald-400"></i><span class="text-emerald-300 font-bold">' +
-        label + " #" + (currentStudentIdx + 1) + "</span>";
+    var box = document.getElementById("student-status-box");
+    if (currentStudentIdx < 0) {
+        box.innerHTML = '<i class="fas fa-user-graduate text-2xl text-slate-700"></i><span class="text-slate-500 font-normal">' +
+            (currentLang === "ru" ? "Ожидание выбора имени студента..." : "Awaiting authentic name selection...") + '</span>';
+        return;
+    }
+    box.innerHTML = '<i class="fas fa-check-circle text-2xl text-emerald-400"></i><span class="text-emerald-300 font-bold">Variant #' +
+        (currentStudentIdx + 1) + " (" + STUDENTS_LIST[currentStudentIdx] + ")</span>";
 }
 function chooseVariant(value) {
-    savePractice();
     var number = Number(value);
-    if (!Number.isInteger(number) || number < 1 || number > 19) return;
+    if (!Number.isInteger(number) || number < 1 || number > 9) return;
+    if (currentStudentIdx >= 0) savePractice();
     currentStudentIdx = number - 1;
     safeStorageSet("variant", number);
     document.getElementById("training-variant").value = String(number);
+    document.getElementById("student-name").value = STUDENTS_LIST[currentStudentIdx];
+    document.getElementById("exam-hub").classList.remove("hidden");
     renderPractice();
+    hasRenderedPractice = true;
+}
+function selectStudentForPractice() {
+    var val = document.getElementById("student-name").value.trim().toLowerCase();
+    var found = val.length >= 3 ? STUDENTS_LIST.findIndex(function(s) {return s.toLowerCase().includes(val);}) : -1;
+    if (found >= 0) {
+        if (currentStudentIdx !== found) chooseVariant(found + 1);
+    } else {
+        if (currentStudentIdx >= 0) savePractice();
+        currentStudentIdx = -1; hasRenderedPractice = false;
+        document.getElementById("training-variant").value = "";
+        document.getElementById("exam-hub").classList.add("hidden");
+        refreshVariantLabel();
+    }
 }
 function randomVariant() {
-    var next = Math.floor(Math.random() * 18);
-    if (next >= currentStudentIdx) next++;
+    var next = Math.floor(Math.random() * (currentStudentIdx < 0 ? 9 : 8));
+    if (currentStudentIdx >= 0 && next >= currentStudentIdx) next++;
     chooseVariant(next + 1);
 }
 function getAnswers() {
@@ -105,6 +132,7 @@ function restorePractice() {
     });
 }
 function renderPractice() {
+    if (currentStudentIdx < 0) return;
     refreshVariantLabel();
     document.getElementById("exam-hub").classList.remove("hidden");
     var methods = [renderQuestionsP1P2, renderTasksP3, renderCaseP4];
@@ -250,7 +278,7 @@ function reviewPractice() {
         [isRu ? "Расчёты 3.1–3.4" : "Computations 3.1–3.4", problemCorrect + "/4"],
         [isRu ? "Таблица издержек" : "Cost matrix", matrixCorrect + "/" + matrixTotal],
         [isRu ? "Кейс: положение ползунка" : "Case: Slider selection", sliderPoints + "/10"],
-        [isRu ? "Кейс: письменное обоснование" : "Case: Written reasoning", wordCount + (isRu ? " слов" : " words")]
+        [isRu ? "Кейс: письменное обоснование" : "Case: Written reasoning", wordCount + (isRu ? " слов (минимум 60)" : " words (minimum 60)")]
     ];
     var out = document.getElementById("practice-results");
     out.innerHTML = "";
@@ -281,8 +309,8 @@ function reviewPractice() {
     var note=document.createElement("p");
     note.className="text-xs text-slate-400 mt-4 leading-relaxed";
     note.textContent=isRu
-        ? "Это самостоятельная тренировка, а не оценка преподавателя. Правильность письменного анализа автоматически не устанавливается; проверь экономическое обоснование и минимум 100 слов."
-        : "Practice feedback only, not an instructor grade. Written reasoning is not auto-graded; review the economics of your explanation and aim for at least 100 words.";
+        ? "Это самостоятельная тренировка, а не оценка преподавателя. Правильность письменного анализа автоматически не устанавливается; проверь экономическое обоснование и минимум 60 слов."
+        : "Practice feedback only, not an instructor grade. Written reasoning is not auto-graded; review the economics of your explanation and aim for at least 60 words.";
     out.appendChild(note);
     out.classList.remove("hidden");
     out.scrollIntoView({behavior:"smooth",block:"start"});
@@ -295,13 +323,11 @@ document.addEventListener("change", function (event) {
     if (event.target.closest && event.target.closest("#exam-hub")) savePractice();
 });
 document.addEventListener("DOMContentLoaded", function () {
-    var variant = Number.parseInt(safeStorageGet("variant") || "1",10);
-    if (!(variant >= 1 && variant <= 19)) variant = 1;
-    currentStudentIdx=variant-1;
-    var picker=document.getElementById("training-variant");
-    picker.value=String(variant);
-    currentLang=safeStorageGet("lang")==="ru"?"ru":"en";
-    document.getElementById("exam-hub").classList.remove("hidden");
+    var storedLang = safeStorageGet("lang");
+    currentLang = storedLang === "en" ? "en" : "ru";
     setLanguage(currentLang);
+    var variant = Number.parseInt(safeStorageGet("variant") || "",10);
+    if (Number.isInteger(variant) && variant >= 1 && variant <= STUDENTS_LIST.length) chooseVariant(variant);
+    else {currentStudentIdx = -1;document.getElementById("exam-hub").classList.add("hidden");refreshVariantLabel();}
     switchTab("tab-part1");
 });
